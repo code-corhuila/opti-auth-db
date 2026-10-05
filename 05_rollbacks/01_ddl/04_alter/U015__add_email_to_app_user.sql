@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS auth.app_user DROP CONSTRAINT IF EXISTS chk_app_user_email;
+ALTER TABLE IF EXISTS auth.app_user DROP COLUMN IF EXISTS email;
