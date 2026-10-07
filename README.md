@@ -23,3 +23,20 @@ branch into another: `merge develop -> qa` and `merge qa -> main` do not exist i
 rule.
 
 Full policy: `00-governance/branching-policy.md` in `library-docs`.
+
+## Demo users (development only)
+
+`V006__seed_demo_users.sql` creates three users when `SEED_DEMO_DATA=true` (develop only);
+`V014__reset_demo_user_passwords.sql` sets the password below for all three, so they can actually
+be used to sign in instead of only existing as unusable bcrypt hashes.
+
+`V015__add_email_to_app_user.sql` adds the (optional) `email` column and sets a synthetic address
+for each demo user.
+
+| Username | Role | Password | Email |
+|---|---|---|---|
+| `admin` | ADMIN | `OptiView2026` | `admin@optiview.com` |
+| `seller` | SELLER | `OptiView2026` | `seller@optiview.com` |
+| `optometrist` | OPTOMETRIST | `OptiView2026` | `optometrist@optiview.com` |
+
+Development only: never reuse this password outside a local or CI environment.
