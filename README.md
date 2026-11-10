@@ -24,19 +24,21 @@ rule.
 
 Full policy: `00-governance/branching-policy.md` in `library-docs`.
 
-## Demo users (development only)
+## Local accounts
 
-`V006__seed_demo_users.sql` creates three users when `SEED_DEMO_DATA=true` (develop only);
-`V014__reset_demo_user_passwords.sql` sets the password below for all three, so they can actually
-be used to sign in instead of only existing as unusable bcrypt hashes.
+Historical demo accounts are disabled by V019 if their hashes still match the seeded values.
+Keep `SEED_DEMO_DATA=false` for a clean installation. With the auth database owner, provision
+one local administrator using `psql` after migration. Enter a unique, randomly generated local
+password at the prompt (never reuse a real credential). The prompt is visible in your terminal;
+do this privately, outside screen sharing or recording.
 
-`V015__add_email_to_app_user.sql` adds the (optional) `email` column and sets a synthetic address
-for each demo user.
+```sql
+\prompt 'Unique password for the local administrator: ' opti_local_password
+INSERT INTO auth.app_user (id, username, full_name, password_hash, role)
+VALUES (gen_random_uuid(), 'demo.operator', 'Operador Demo',
+        crypt(:'opti_local_password', gen_salt('bf', 12)), 'ADMIN');
+\unset opti_local_password
+```
 
-| Username | Role | Password | Email |
-|---|---|---|---|
-| `admin` | ADMIN | `OptiView2026` | `admin@optiview.com` |
-| `seller` | SELLER | `OptiView2026` | `seller@optiview.com` |
-| `optometrist` | OPTOMETRIST | `OptiView2026` | `optometrist@optiview.com` |
-
-Development only: never reuse this password outside a local or CI environment.
+Sign in as `demo.operator` and use the application to add test users. Use only fictional data.
+V019 leaves accounts with already rotated credentials unchanged. Do not edit old Flyway migrations.
